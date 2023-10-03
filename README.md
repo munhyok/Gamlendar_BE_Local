@@ -10,7 +10,7 @@ FastAPI
 ### DB
 MongoDB, Redis
 
-### List Implementation
+### Implementation
 Game CRUD
 Search
 Notice CRUD
