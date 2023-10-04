@@ -14,8 +14,10 @@ MongoDB, Redis
 Game CRUD
 
 Search
+- 자동완성
+- DB Search & Result Caching
 
-Notice CRUD
+Notice CRUD (구현 예정)
 
 Redis Caching
 
