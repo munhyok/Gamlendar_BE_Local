@@ -6,6 +6,7 @@ Python
 
 ### Web Framework
 FastAPI
+MCS Pattern (Model - Controller - Service)
 
 ### DB
 MongoDB, Redis
@@ -16,7 +17,7 @@ Game CRUD
 
 Search
 - 자동완성
-- DB Search & Result Caching
+- MongoDB Full Text Search & Redis Search Result Caching
 
 Notice CRUD (구현 예정)
 
