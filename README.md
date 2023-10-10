@@ -26,9 +26,9 @@ Redis Caching
 ------
 
 ## Blog Post
-[겜린더 백엔드 문제 인식과 문제 해결을 위한 조사](https://velog.io/@grit_munhyeok/겜린더-백엔드-문제-인식과-문제-해결을-위한-조사)
+[MongoDB는 겜린더에 적합한 DB일까?](https://velog.io/@grit_munhyeok/겜린더-백엔드-문제-인식과-문제-해결을-위한-조사)
 
-[겜린더 검색 자동완성 성능을 개선해 보기](https://velog.io/@grit_munhyeok/겜린더-검색-자동완성-성능을-개선해-보기)
+[Redis를 이용해 겜린더 검색 자동완성 성능을 개선해 보기](https://velog.io/@grit_munhyeok/겜린더-검색-자동완성-성능을-개선해-보기)
 
 ------
 
