@@ -6,7 +6,8 @@ Python
 
 ### Web Framework
 FastAPI
-MCS Pattern (Model - Controller - Service)
+
+Model - Schemas - Routes 구조
 
 ### DB
 MongoDB, Redis
