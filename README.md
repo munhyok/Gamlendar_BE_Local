@@ -7,7 +7,7 @@ Python
 ### Web Framework
 FastAPI
 
-Model - Schemas - Routes 구조
+Model - Schema - Route 구조
 
 ### DB
 MongoDB, Redis
@@ -17,12 +17,15 @@ Game CRUD
 - Game Data Caching
 
 Search
-- 자동완성
+- Autocomplete
 - MongoDB Full Text Search & Redis Search Result Caching
 
 Notice CRUD (구현 예정)
 
 Redis Caching
+- Calendar Data
+- GameInfo
+- Search Result
 
 ------
 
