@@ -29,6 +29,8 @@ Redis Caching
 
 ### Caching Strategies
 Look-Aside
+![](/Readme%20Image/Caching%20Strategies.png)
+
 
 ------
 
