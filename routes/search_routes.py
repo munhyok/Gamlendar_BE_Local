@@ -41,7 +41,7 @@ async def get_game_result(keyword: str):
             db_data.append(data)
         
         reCache.set("search:"+keyword, json.dumps(db_data), ex=300)
-        return json.loads(reCache.get("search:"+keyword))
+        return db_data
     
     
-    return json.loads(reCache.get("search:"+keyword))
+    return db_data
