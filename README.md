@@ -17,7 +17,7 @@ Game CRUD
 - Game Data Caching
 
 Search
-- Autocomplete
+- Autocomplete (검색어 자동완성)
 - MongoDB Full Text Search & Redis Search Result Caching
 
 Notice CRUD (구현 예정)
@@ -26,6 +26,9 @@ Redis Caching
 - Calendar Data
 - GameInfo
 - Search Result
+
+### Caching Strategies
+Look-Aside
 
 ------
 
