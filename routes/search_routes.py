@@ -34,9 +34,10 @@ async def get_text(text: str):
             description='검색 결과 데이터를 받아옵니다.')
 async def get_game_result(keyword: str):
     
+    cache_data = reCache.get("search:"+keyword)
     db_data = list()
     
-    if reCache.get("search:"+keyword) == None:
+    if cache_data == None:
         for data in games_serializer(collection.find({"$text":{"$search":keyword}})):
             db_data.append(data)
         
@@ -44,4 +45,4 @@ async def get_game_result(keyword: str):
         return db_data
     
     
-    return db_data
+    return json.loads(cache_data)

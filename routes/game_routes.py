@@ -39,28 +39,30 @@ async def post_game(game: gameForm):
           description='게임 이름으로 정보을 얻어올 수 있습니다.')
 async def get_game(name: str):
     # game expire time : 10min
-    db_data = list()
-    if reCache.get("game:"+name) == None:
+    cache_data = reCache.get("game:"+name)
+    
+    if cache_data == None:
         db_data = games_serializer(collection.find({"name":name}))
         reCache.set("game:"+name,json.dumps(db_data), ex=120)
         
         return db_data
     
-    return db_data
+    return cache_data
 
 
 @game.get("/games/date/{date}", status_code=status.HTTP_200_OK,
           description='YYYY-MM-DD 형식으로 입력하고 해당 날짜의 게임들을 불러옵니다.')
 async def get_date(date: str):
     # date expire time : 60sec
-    db_data = list()
-    if reCache.get("date:"+date) == None:
+    cache_data = reCache.get("date:"+date)
+    
+    if cache_data == None:
         db_data = games_serializer(collection.find({"date":date}))
         reCache.set("date:"+date, json.dumps(db_data), ex=60)
         
         return db_data
     
-    return db_data
+    return json.loads(cache_data)
 
 
 
@@ -69,24 +71,22 @@ async def get_date(date: str):
 async def get_yearmonth(yearmonth: str):
     
     #yearmonth expire time: 60sec
-    
+    cache_data = reCache.get("yearmonth:"+yearmonth)
     dateList = []
-    tmp = None
     
-    if reCache.get("yearmonth:"+yearmonth) == None:
+    
+    if cache_data == None:
         db_data = games_serializer(collection.find({"yearmonth":yearmonth}))
     
         for num in range(len(db_data)):
             dateList.append(db_data[num]["date"])
         
-        tmp = list(set(dateList))
-        reCache.set("yearmonth:"+yearmonth, json.dumps(tmp),ex=60)
+        set_data = list(set(dateList))
+        reCache.set("yearmonth:"+yearmonth, json.dumps(set_data),ex=60)
         
-        #return json.loads(reCache.get("yearmonth:"+yearmonth))
-        return tmp
+        return set_data
     
-    #return json.loads(reCache.get("yearmonth:"+yearmonth))
-    return tmp
+    return json.loads(cache_data)
 
 
 
