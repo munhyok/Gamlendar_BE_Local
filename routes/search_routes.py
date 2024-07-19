@@ -2,11 +2,11 @@ import json
 from fastapi import APIRouter, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from models.game import gameForm
-from schemas.game_schema import games_serializer
+from schemas.game_serializer import games_serializer
 from bson import ObjectId
-from config.mongo import collection
+from config.mongo import gameDB
 from config.tags_metadata import tags_metadata
-from config.redis import reCache
+from config.redis import reDB
 
 
 
@@ -25,8 +25,10 @@ async def get_text(text: str):
     max = b'[' + text_bytes + b"\xff"
     
     
-    result = reCache.execute_command('zrange', 'autocomplete', min, max, 'BYLEX')
+    result = await reDB.execute_command('zrange', 'autocomplete', min, max, 'BYLEX')
+    
 
+    
     return result
 
 
@@ -34,15 +36,20 @@ async def get_text(text: str):
             description='검색 결과 데이터를 받아옵니다.')
 async def get_game_result(keyword: str):
     
-    cache_data = reCache.get("search:"+keyword)
-    db_data = list()
+    cache_data = reDB.get("search:"+keyword)
+    
     
     if cache_data == None:
-        for data in games_serializer(collection.find({"$text":{"$search":keyword}})):
-            db_data.append(data)
+        db_cursor = gameDB.find({"$text":{"$search":keyword}})
+        db_data = await db_cursor.to_list(length=None)
+
         
-        reCache.set("search:"+keyword, json.dumps(db_data), ex=300)
-        return db_data
+        db_serialize = games_serializer(db_data)
+        
+        
+        
+        await reDB.set("search:"+keyword, json.dumps(db_serialize), ex=300)
+        return db_serialize
     
     
     return json.loads(cache_data)

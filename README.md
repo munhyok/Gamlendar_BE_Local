@@ -16,7 +16,18 @@ FastAPI
 Model - Schema - Route 구조
 
 ### DB
-MongoDB, Redis
+MongoDB
+- pymongo (sync)
+- motor (async)
+  
+pymongo 비동기 지원 X
+~~(몰랐다.. 이대로 출시했으면 큰일났을지도)~~
+
+비동기 지원하는 motor로 리팩토링
+
+Redis
+- redis-py
+
 
 ### Implementation
 Game CRUD

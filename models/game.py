@@ -2,6 +2,25 @@
 from pydantic import BaseModel, Field
 import time
 from bson import ObjectId
+from typing import List
+
+class Game(BaseModel):
+    id: str
+    timestamp: str
+    path: str
+    gindie: str
+    name: str
+    autokwd: List[str]
+    company: str
+    yearmonth: str
+    date: str
+    description: str
+    platform: List[str]
+    gameurl: str
+    imageurl: str
+    yturl: str
+    screenshots: List[str]
+    adult: bool
 
 class gameForm(BaseModel):
     
@@ -25,3 +44,22 @@ class gameForm(BaseModel):
     
     class Config:
         json_encoders = {ObjectId: str}
+        
+        
+class GameListForm(BaseModel):
+    
+    timestamp: str
+    path: str
+    gindie: str
+    
+    name: str
+    
+    yearmonth: str
+    date: str
+    platform: list[str]
+    
+    imageurl: str
+    
+    class Config:
+        json_encoders = {ObjectId: str}
+    

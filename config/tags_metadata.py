@@ -13,5 +13,10 @@ tags_metadata = [
     {
         "name": 'Notice',
         "description": '공지사항 CRUD API'
+    },
+    
+    {
+        "name": 'User',
+        "description": '유저 로그인 조회 API'
     }
 ]
