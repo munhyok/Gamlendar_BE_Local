@@ -5,7 +5,7 @@ from beanie import Document
 from .game import Game, gameForm
 
 class Register(BaseModel):
-    username: EmailStr
+    username: str
     nickname: str
     password: str
     myGamlendar: list[str] = []
@@ -40,3 +40,10 @@ class Token(BaseModel):
     access_token: str
     refresh_token: str
     token_type: str
+
+
+class FindAccount(BaseModel):
+    username: EmailStr
+    
+class FindNickname(BaseModel):
+    nickname: str

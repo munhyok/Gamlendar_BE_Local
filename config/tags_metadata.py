@@ -18,5 +18,10 @@ tags_metadata = [
     {
         "name": 'User',
         "description": '유저 로그인 조회 API'
+    },
+    
+    {
+        "name": 'Service',
+        "description": '앱 서비스 관련 정보'
     }
 ]

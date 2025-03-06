@@ -48,17 +48,22 @@ class gameForm(BaseModel):
         
 class GameListForm(BaseModel):
     
+    id: str
     timestamp: str
     path: str
     gindie: str
-    
     name: str
-    
+    autokwd: List[str]
+    company: str
     yearmonth: str
     date: str
-    platform: list[str]
-    
+    description: str
+    platform: List[str]
+    gameurl: str
     imageurl: str
+    yturl: str
+    screenshots: List[str]
+    adult: bool
     
     class Config:
         json_encoders = {ObjectId: str}

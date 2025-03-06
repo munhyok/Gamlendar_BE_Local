@@ -91,12 +91,14 @@ async def verify_code(email_type: str ,to_email: str, code: str):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"message":"인증번호가 틀립니다"})
     
     
-    await reDB.delete(f"{email_type}:{to_email}")
+    await reDB.setex(f"{email_type}:{to_email}", 300, "Verify")
+    
     
     
 async def random_code_generator(email_type: str, email: str):
     
-    code = '{:06}'.format(secrets.randbelow(1000000))
+    code = '{:06d}'.format(secrets.randbelow(900000) + 100000)
+    #code = '007622'
     
     await reDB.delete(f"{email_type}:{email}")
     await reDB.setex(f"{email_type}:{email}", 300, code)

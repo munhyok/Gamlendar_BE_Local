@@ -7,23 +7,22 @@
 
 ## 실제 겜린더에 사용할 용도로 제작 중입니다.
 
+## 최근 작업
+리팩토링 game, search route에 있는 비즈니스 로직을 Service 로직으로 옮기기 ✅
+
+테스트 코드 작성하기 (작성 중)
+
+-----
+
 ### Language
 Python
 
 ### Web Framework
 FastAPI
 
-Model - Schema - Route 구조
-
 ### DB
 MongoDB
-- pymongo (sync)
-- motor (async)
-  
-pymongo 비동기 지원 X
-~~(몰랐다.. 이대로 출시했으면 큰일났을지도)~~
-
-비동기 지원하는 motor로 리팩토링
+- pymongo
 
 Redis
 - redis-py
@@ -32,12 +31,12 @@ Redis
 ### Implementation
 Game CRUD
 - Game Data Caching
+- platform, tag filtering
 
 Search
 - Autocomplete (검색어 자동완성)
 - MongoDB Full Text Search & Redis Search Result Caching
 
-Notice CRUD (구현 예정)
 
 Redis Caching
 - Calendar Data
@@ -59,4 +58,5 @@ Look-Aside
 ------
 
 ## Server H/W
-- Raspberry Pi 4 (Ubuntu Server)
+- Mini PC (Intel N100)
+- ARM Arch는 ARMv8.2A 이상부터 지원하고 적절한 CPU 아키텍쳐가 없는 단일 보드 하드웨어를 지원하지 않는다. (라즈베리파이 지원 안함 😭) 자세한 부분은 [MongoDB 프로덕션 정보 참고](https://www.mongodb.com/ko-kr/docs/manual/administration/production-notes/)

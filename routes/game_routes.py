@@ -1,5 +1,5 @@
 import json
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Query
 from fastapi.encoders import jsonable_encoder
 from models.game import gameForm, GameListForm
 from schemas.game_serializer import games_serializer
@@ -7,8 +7,16 @@ from bson import ObjectId
 from config.mongo import gameDB
 from config.tags_metadata import tags_metadata
 from config.redis import reDB
-from typing import List
+from typing import List, Annotated
 from datetime import date
+
+
+from services.game_service import (
+    post_game_service, get_games_service, 
+    get_game_service, get_date_service,
+    get_yearmonth_service, get_gindie_service
+    
+)
 
 game = APIRouter(tags=['Game'])
 
@@ -19,98 +27,47 @@ game = APIRouter(tags=['Game'])
            description='게임 정보를 DB에 업로드하기 위한 post입니다.')
 async def post_game(game: gameForm):
     
-    result = await gameDB.insert_one(dict(game))
-    inserted_id = result.inserted_id
+    result = await post_game_service(game)
     
-    db_cursor = gameDB.find({"_id": inserted_id})
-    
-    db_data = await db_cursor.to_list(length=None)
-    
-    # 직렬화 작업
-    serialized_game = games_serializer(db_data) 
-
-    #Crawling BOT에서 POST할 때 수집된 키워드를 Redis에 보내는 작업
-    autokwd_dict = dict()
-    
-    for text in range(len(serialized_game[0]["autokwd"])):
-        autokwd_dict[serialized_game[0]["autokwd"][text]] = 0
-        
-    await reDB.zadd('autocomplete', autokwd_dict)
-    
-    
-    return {"status": "Ok", "data": serialized_game}
+    return result
 
 
 
 ### Read
-@game.get("/games/", status_code=status.HTTP_200_OK, response_model=List[GameListForm],
-          description='날짜를 기준으로 10개씩 게임 출력해줍니다.')
-async def get_games(start_date: date, page: int = 1, page_size: int = 10):
+@game.get("/games", status_code=status.HTTP_200_OK, response_model=List[GameListForm],
+          description='날짜를 기준으로 게임을 출력해줍니다.')
+async def get_games(
+    start_date: date,
+    page: int = 1,
+    page_size: int = 15,
+    platform: Annotated[list[str], Query()]=None,
+    tag: Annotated[list[str], Query()]= None ):
     
-    cache_data = await reDB.get("gameList:"+str(start_date)+'_'+str(page))
     
-    if cache_data is None:
-        skip = (page - 1) * page_size
-        query = {"date": {"$gte": start_date.isoformat()}}
-        
-        cursor = gameDB.find(query).sort("date", 1).skip(skip).limit(page_size)
-        games = []
-        
-        async for game in cursor:
-            games.append(game)
-        
-        if not games:
-            raise HTTPException(status_code=404, detail="No games found")
-        
-        # Serialize the games
-        serialize = games_serializer(games)
-
-        # Cache the serialized data
-        await reDB.set("gameList:"+str(start_date)+'_'+str(page), json.dumps(serialize), ex=600)
-
-        return serialize
+    result = await get_games_service(start_date, page, page_size, platform, tag)
     
-    return json.loads(cache_data)
+    return result
 
 
 @game.get("/games/{name}", status_code=status.HTTP_200_OK,
           description='게임 이름으로 정보을 얻어올 수 있습니다.')
 async def get_game(name: str):
     # game expire time : 10min
-    cache_data = await reDB.get("game:"+name)
     
-    if cache_data == None:
-        db_cursor = gameDB.find({"name":name})
-        db_data = await db_cursor.to_list(length=None)
-        
-        db_serialize = games_serializer(db_data)
-        
-        
-        await reDB.set("game:"+name, json.dumps(db_serialize), ex=120)
-        
-        return db_serialize
+    result = await get_game_service(name)
     
-    return json.loads(cache_data)
+    return result
 
 
 @game.get("/games/date/{date}", status_code=status.HTTP_200_OK,
           description='YYYY-MM-DD 형식으로 입력하고 해당 날짜의 게임들을 불러옵니다.')
 async def get_date(date: str):
-    # date expire time : 60sec
-    cache_data = await reDB.get("date:"+date)
     
-    if cache_data == None:
-        
-        db_cursor = gameDB.find({"date":date})
-        db_data = await db_cursor.to_list(length=None)
-        
-        db_serialize = games_serializer(db_data)
-        
-        await reDB.set("date:"+date, json.dumps(db_serialize), ex=60)
-        
-        return db_serialize
+    result = await get_date_service(date)
     
-    return json.loads(cache_data)
+    return result
+    
+    
 
 
 
@@ -118,26 +75,9 @@ async def get_date(date: str):
           description='YYYY-MM 형식으로 입력하면 해당 년-월에 출시하는 날짜(YYYY-MM-DD) 정보를 모아서 불러옵니다. 달력에 표시하기 위함')
 async def get_yearmonth(yearmonth: str):
     
-    #yearmonth expire time: 60sec
-    cache_data = await reDB.get("yearmonth:"+yearmonth)
-    dateList = []
+    result = await get_yearmonth_service(yearmonth)
     
-    
-    if cache_data == None:
-        
-        db_cursor = gameDB.find({"yearmonth": yearmonth})
-        db_data = await db_cursor.to_list(length=None)
-        
-    
-        for num in range(len(db_data)):
-            dateList.append(db_data[num]["date"])
-        
-        set_data = list(set(dateList))
-        await reDB.set("yearmonth:"+yearmonth, json.dumps(set_data),ex=60)
-        
-        return set_data
-    
-    return json.loads(cache_data)
+    return result
 
 
 
@@ -145,10 +85,7 @@ async def get_yearmonth(yearmonth: str):
           description='겜린더 등록페이지에 수동으로 등록한 게임 조회')
 async def get_gindie(gindie: str):
     
-    db_cursor = gameDB.find({"gindie":gindie})
-    db_data = await db_cursor.to_list(length=None)
-    
-    result = games_serializer(db_data)
+    result = await get_gindie_service(gindie)
     
     return result
 
