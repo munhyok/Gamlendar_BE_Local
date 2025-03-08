@@ -47,7 +47,6 @@ async def create_collections():
 
 
 gameDB = db["Gamlendar_game"]
-
 userDB = db["User"]
 
 async def main():

@@ -85,6 +85,9 @@ async def get_game_service(name):
         db_cursor = gameDB.find({"name":name})
         db_data = await db_cursor.to_list(length=None)
         
+        if not db_data:
+            raise HTTPException(status_code=404, detail="게임이 존재하지 않습니다")
+        
         db_serialize = games_serializer(db_data)
         
         
