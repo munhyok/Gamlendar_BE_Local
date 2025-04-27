@@ -136,8 +136,8 @@ async def add_game_myGamlendar(game_id:str,game_date: str, game_name: str, curre
     
     try:
         find = await userDB.find_one(
-        {"_id": obj_user_id, "myGamlendar": obj_game_id},
-        {"_id": 1}
+            {"_id": obj_user_id, "myGamlendar": {"$elemMatch": {"$eq": obj_game_id}}},
+            {"_id": 1}
         )
     
 

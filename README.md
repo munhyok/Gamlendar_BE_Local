@@ -5,14 +5,16 @@
 
 [Redis를 이용해 겜린더 검색 자동완성 성능을 개선해 보기](https://velog.io/@grit_munhyeok/겜린더-검색-자동완성-성능을-개선해-보기)
 
-### 실제 겜린더에 사용할 용도로 제작 중입니다.
+## 실제 겜린더에 사용할 용도로 제작 중입니다.
+## 프로덕션 repo는 Private 처리 되어있습니다.
 
 
 
 ## 최근 작업
-리팩토링 game, search route에 있는 비즈니스 로직을 Service 로직으로 옮기기 ✅
+리팩토링 game, search, user route에 있는 로직을 Service 로직으로 옮기기 
 
 테스트 코드 작성하기 (작성 중)
+
 
 ## Server H/W
 - Mini PC (Intel N100)

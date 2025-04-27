@@ -23,7 +23,7 @@ game = APIRouter(tags=['Game'])
 #Update는 추후 관리페이지 제작할 때 같이 제작
 
 ### Create
-@game.post("/games", status_code=status.HTTP_201_CREATED,
+@game.post("/admin/games", status_code=status.HTTP_201_CREATED,
            description='게임 정보를 DB에 업로드하기 위한 post입니다.')
 async def post_game(game: gameForm):
     
@@ -92,14 +92,14 @@ async def get_gindie(gindie: str):
 
 
 ### Delete
-@game.delete("/games/{id}", status_code=status.HTTP_204_NO_CONTENT,
+@game.delete("/admin/games/{id}", status_code=status.HTTP_204_NO_CONTENT,
              description='ObjectID로 삭제')
 async def delete_game_obj(id: str):
     await gameDB.find_one_and_delete({"_id":ObjectId(id)})
     return {"status":"Delete Complete"}
 
 
-@game.delete("/games/{name}", status_code=status.HTTP_204_NO_CONTENT,
+@game.delete("/admin/games/{name}", status_code=status.HTTP_204_NO_CONTENT,
              description='게임 이름으로 삭제')
 async def delete_game(name: str):
     await gameDB.find_one_and_delete({"name":name})

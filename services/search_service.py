@@ -35,7 +35,7 @@ async def get_game_result_service(keyword):
 
         
         db_serialize = games_serializer(db_data)
-        print(db_serialize)
+        #print(db_serialize)
         await reDB.set("search:"+keyword, json.dumps(db_serialize), ex=300)
         
         return db_serialize
