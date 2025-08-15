@@ -4,17 +4,22 @@ from fastapi import APIRouter, HTTPException, status, Query
 from config.redis import reDB
 from config.mongo import gameDB
 from config.tags_metadata import tags_metadata
-
-from typing import List, Annotated
-from datetime import date
-from pymongoexplain import ExplainableCollection
-from bson import ObjectId
 from schemas.game_serializer import games_serializer
 from models.game import gameForm, GameListForm
 
+from typing import List, Annotated
+from datetime import date
+from bson import ObjectId
 
 
-async def post_game_service(game):
+
+
+async def post_game_service(game: gameForm):
+    find = await gameDB.find_one({"name": game.name})
+    if find:
+        await gameDB.update_one({"name": game.name}, {"$set": dict(game)})
+        
+        return {"status": "Update", "msg": "게임 정보가 업데이트 되었습니다."}
     
     result = await gameDB.insert_one(dict(game))
     inserted_id = result.inserted_id
@@ -38,7 +43,7 @@ async def post_game_service(game):
     return {"status": "Ok", "data": serialized_game}
 
 
-async def get_games_service(start_date:date, page, page_size, platform, tag):
+async def get_games_service(start_date, page, page_size, platform, tag):
     filters = {"date": {"$gte": start_date.isoformat()}}
     result = []
     
@@ -84,9 +89,6 @@ async def get_game_service(name):
     if cache_data == None:
         db_cursor = gameDB.find({"name":name})
         db_data = await db_cursor.to_list(length=None)
-        
-        if not db_data:
-            raise HTTPException(status_code=404, detail="게임이 존재하지 않습니다")
         
         db_serialize = games_serializer(db_data)
         

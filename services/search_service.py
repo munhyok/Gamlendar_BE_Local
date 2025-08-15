@@ -11,34 +11,49 @@ from config.redis import reDB
 
 async def get_text_service(text):
     
-    text_bytes = text.encode('utf-8')
+    #text_bytes = text.encode('utf-8')
+    #
+    #
+    #min = b'[' + text_bytes
+    #max = b'[' + text_bytes + b"\xff"
+    #
+    #
+    #result = await reDB.execute_command('zrange', 'autocomplete', min, max, 'BYLEX')
+    #
+#
+    #
+    #return result
     
     
-    min = b'[' + text_bytes
-    max = b'[' + text_bytes + b"\xff"
     
+    result = []
+    pipeline = [
+            {"$match": {"$text": {"$search": text}}},
+            {"$sort": {"score": {"$meta": "textScore"}}}
+    ]
     
-    result = await reDB.execute_command('zrange', 'autocomplete', min, max, 'BYLEX')
+    search_cursor = gameDB.aggregate(pipeline)
+        
+    async for games in await search_cursor:
+        raw = []
+        raw.append(games)
+        serialize = games_serializer(raw)
+        result.append(serialize[0])
+        
     
-
+        
     
     return result
+    
 
-async def get_game_result_service(keyword):
-    cache_data = reDB.get("search:"+keyword)
-    cache_data = None
-    if cache_data == None:
-        db_cursor = gameDB.find({"$text": {"$search":keyword}},
-                                {"score": {"$meta":'textScore'}}
-                                ).sort({ "score": { "$meta": "textScore" } })
-        db_data = await db_cursor.to_list(length=None)
-
-        
-        db_serialize = games_serializer(db_data)
-        #print(db_serialize)
-        await reDB.set("search:"+keyword, json.dumps(db_serialize), ex=300)
-        
-        return db_serialize
+async def get_game_result_service(name):
     
     
-    return json.loads(cache_data)
+    result = await gameDB.find_one({"name": name})
+    
+    result['id'] = str(result['_id'])
+    
+    del result['_id']
+    
+    
+    return result

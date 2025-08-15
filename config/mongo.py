@@ -48,6 +48,7 @@ async def create_collections():
 
 gameDB = db["Gamlendar_game"]
 userDB = db["User"]
+epicDB = db["Epic_FreeGame"]
 
 async def main():
     await gameDB.create_index([

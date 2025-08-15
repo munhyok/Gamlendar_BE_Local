@@ -33,7 +33,7 @@ load_dotenv()
 @user.post("/register", status_code=status.HTTP_201_CREATED)
 async def user_create(register: Register):
     await create_user(register)
-    return {"status": 201, "msg":'가입완료', "data":register}
+    return {"status": 201, "msg":'가입완료'}
 
 
 @user.post("/find/account", status_code=status.HTTP_200_OK)

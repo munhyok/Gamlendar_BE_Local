@@ -23,5 +23,15 @@ tags_metadata = [
     {
         "name": 'Service',
         "description": '앱 서비스 관련 정보'
+    },
+    
+    {
+        "name": 'EpicStore',
+        "description": '에픽스토어 무료게임'
+    },
+    
+    {
+        "name": 'V1-MyGamlendar',
+        "description": '겜린더 기능 모음'
     }
 ]

@@ -34,17 +34,20 @@ class gameForm(BaseModel):
     date: str
     description: str 
     platform: list[str]
-    gameurl: str
+    gameurl: dict[str, str]
     imageurl: str
-    yturl: str | None = None
+    yturl: str = None
     
-    screenshots: list[str] | None = None
+    screenshots: list[str] = None
+    tag: list[str]
     
     adult: bool
     
     class Config:
         json_encoders = {ObjectId: str}
         
+        
+
         
 class GameListForm(BaseModel):
     
@@ -59,11 +62,13 @@ class GameListForm(BaseModel):
     date: str
     description: str
     platform: List[str]
-    gameurl: str
+    gameurl: dict[str, str]
     imageurl: str
     yturl: str
     screenshots: List[str]
+    tag: List[str]
     adult: bool
+    
     
     class Config:
         json_encoders = {ObjectId: str}

@@ -11,9 +11,8 @@
 
 
 ## 최근 작업
-리팩토링 game, search, user route에 있는 로직을 Service 로직으로 옮기기 
-
 테스트 코드 작성하기 (작성 중)
+
 
 
 ## Server H/W
@@ -49,6 +48,7 @@ Redis
 - JWT 기반 로그인 구현
 - 회원가입 Email 인증 기능 구현
 - device_id에 따른 refresh_token 생성 로직
+- Social Login 구현 (구글, 애플)
 
 
 
